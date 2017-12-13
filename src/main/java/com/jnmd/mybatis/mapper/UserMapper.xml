@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 在实际开发中,namespace命名空间指定目标的接口全路径 -->
+<mapper namespace="com.jnmd.mybatis.mapper.UserMapper">
+	
+	<select id="testIftag" resultType="User">
+		select uid, userName name, password , age
+		from t_user
+		<if test="userName != null and userName.leaguth() &gt;1">
+		where userName = #{userName}
+		</if>
+	</select>
+	
+	<select id="testTrimPrefix" resultType="User">
+		select uid, userName name,password,age 
+		from t_user
+		<trim  prefix="where" prefixOverrides="and|or">
+			<if test="userName != null and userName.length() &gt; 1">
+		 	and userName = #{userName}	
+			</if>
+		</trim>
+	</select>
+	
+	<update id="testTrimSuffix">
+	update t_user
+		<trim prefix="set" suffixOverrides="," suffix="where uid = #{uid}">
+			<if test="userName != null and userName.length() &gt; 1">
+				userName = #{userName}
+			</if>
+			<if test="password != null and password.length() &gt; 5">
+				password = #{password}
+			</if>		
+		</trim>
+	</update>
+	
+	<select id="testChoose" resultType="User">
+		select uid, userName name, password, age
+		from t_user 
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userName != null and userName.length()  &gt; 1">
+				and userName = #{userName}
+			</if>
+			<choose>
+				<when test = "age == null">
+				</when>
+				<!-- 
+					test属性中不能使用占位符的方式传递参数
+					直接使用Map集合中的Key来获取Value
+				 -->
+				<when test = "age != null and age &gt; ageValue">
+					and age &gt; #{age}
+				</when>
+			</choose>
+		</trim>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>
+	
